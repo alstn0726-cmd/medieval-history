@@ -1,0 +1,605 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>근대 유럽 역사 체험 게임</title>
+<style>
+:root{
+  --bg:#f4ead0; --paper:#fffaf0; --ink:#34251d; --muted:#8a6a3f;
+  --line:#c8a56c; --accent:#8f3430; --dark:#30281d;
+}
+*{box-sizing:border-box}
+body{margin:0;background:linear-gradient(#f7efd9,#efe0bd);color:var(--ink);
+font-family:"Noto Serif KR","Malgun Gothic",serif;min-height:100vh}
+.wrap{max-width:1040px;margin:0 auto;padding:26px 24px 60px}
+.header{text-align:center;margin-bottom:26px}
+.eyebrow{letter-spacing:.18em;color:#8a6337;font-weight:700;font-size:.9rem}
+h1{font-size:clamp(2.2rem,6vw,4.6rem);margin:10px 0;color:#33251c}
+.big{font-size:clamp(3rem,10vw,7rem);color:#96332f;line-height:.9;margin:6px 0}
+.subtitle{color:#7e5d37}
+.card{background:rgba(255,250,240,.94);border:1px solid var(--line);border-radius:8px;
+padding:28px;box-shadow:0 12px 28px rgba(85,55,20,.08)}
+.progress{display:flex;gap:12px;align-items:center;color:#7a5b35;font-weight:700;margin-bottom:22px}
+.bar{height:8px;flex:1;background:#ddcfac;border-radius:99px;overflow:hidden}
+.fill{height:100%;background:linear-gradient(90deg,#94332f,#ba782d);width:0;transition:.25s}
+.scene{font-size:clamp(1.15rem,2.3vw,1.8rem);font-weight:800;line-height:1.65;margin:14px 0}
+.prompt{border-left:4px solid #9c3434;background:#f4ead0;padding:14px 18px;line-height:1.6;margin:18px 0}
+.choices{display:grid;gap:12px;margin-top:18px}
+.choice{width:100%;text-align:left;padding:16px 18px;border:1px solid #b9955d;
+background:#fffaf0;border-radius:8px;color:#30251e;font:inherit;cursor:pointer;line-height:1.55}
+.choice:hover{background:#f5ead4;transform:translateY(-1px)}
+.choice b{margin-right:8px;color:#7f2d2a}
+.result{text-align:center;padding:24px 6px}
+.result h2{font-size:clamp(2rem,4vw,3.2rem);color:#71302d}
+.result p{line-height:1.75}
+.btn{border:0;background:#73322d;color:white;padding:13px 20px;border-radius:7px;
+font:inherit;font-weight:800;cursor:pointer;margin:8px}
+.btn.secondary{background:#362b1f}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:22px}
+.stat{background:#30291e;color:#f8e6bc;border:1px solid #8e6b37;border-radius:8px;
+padding:14px;text-align:center;transition:.18s}
+.stat .lab{font-size:.82rem;color:#d9c7a7}
+.stat .val{font-size:1.7rem;font-weight:800;margin-top:4px}
+.stat.up{background:#285c38!important;border-color:#6bb27a!important;transform:translateY(-2px)}
+.stat.down{background:#6e2d2b!important;border-color:#c06a64!important;transform:translateY(-2px)}
+.hidden{display:none!important}
+.notice{font-size:.9rem;color:#8a6b46;margin-top:16px}
+@media(max-width:680px){.stats{grid-template-columns:repeat(2,1fr)}.card{padding:20px}}
+</style>
+
+<style id="v22-home-button-style">
+.home-btn{
+  position:fixed;
+  top:18px;
+  left:18px;
+  z-index:9999;
+  border:1px solid #9a7040;
+  background:#3a2d21;
+  color:#fff8e8;
+  padding:10px 14px;
+  border-radius:8px;
+  font:inherit;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 6px 16px rgba(0,0,0,.14);
+}
+.home-btn:hover{background:#5a3c28}
+@media(max-width:680px){
+  .home-btn{top:10px;left:10px;padding:9px 12px;font-size:.9rem}
+  .wrap{padding-top:64px}
+}
+</style>
+
+
+<style id="v23-ornate-historic-style">
+:root{
+ --parchment:#efe0b7; --ivory:#fff9e9; --wine:#702e2a; --gold:#b48a45;
+ --deep:#292117; --brown:#5b432b; --shadow:rgba(57,38,18,.22);
+}
+body{
+ background:
+  radial-gradient(circle at 15% 10%,rgba(255,255,255,.55),transparent 28%),
+  radial-gradient(circle at 85% 20%,rgba(180,137,68,.12),transparent 30%),
+  repeating-linear-gradient(0deg,rgba(95,65,30,.018) 0 1px,transparent 1px 4px),
+  linear-gradient(135deg,#e5d1a0,#f5ead0 48%,#dfc590);
+}
+.wrap{max-width:1100px;padding-top:34px}
+.header{
+ position:relative;padding:22px 90px 20px;margin:0 auto 26px;
+ border-bottom:3px double #a67a3e;
+}
+.header:before,.header:after{
+ content:"❦";position:absolute;bottom:-17px;color:#8b632f;font-size:28px;
+ background:#eee0bb;padding:0 12px;
+}
+.header:before{left:22%}.header:after{right:22%;transform:scaleX(-1)}
+.eyebrow{font-family:Georgia,"Times New Roman",serif;color:#78522c}
+h1{
+ text-shadow:0 1px #fff7df,0 3px 8px rgba(65,38,14,.13);
+ letter-spacing:-.035em;
+}
+.big{
+ font-family:Georgia,"Times New Roman",serif;
+ text-shadow:0 2px #f9eac7,0 5px 14px rgba(91,35,27,.18);
+}
+.card{
+ position:relative;
+ background:
+  linear-gradient(rgba(255,250,235,.94),rgba(249,239,210,.96)),
+  repeating-linear-gradient(90deg,rgba(120,80,35,.025) 0 1px,transparent 1px 5px);
+ border:2px solid #a47b42;
+ border-radius:4px;
+ box-shadow:0 0 0 5px #ead6a7,0 0 0 7px #8d6635,0 18px 38px var(--shadow);
+ padding:40px 42px;
+}
+.card:before,.card:after{
+ content:"✦";position:absolute;color:#9c7138;font-size:25px;background:#f4e8c9;
+ width:36px;height:36px;line-height:34px;text-align:center;border:1px solid #b58b4f;
+ transform:rotate(45deg);
+}
+.card:before{left:-18px;top:-18px}.card:after{right:-18px;bottom:-18px}
+.card:before{line-height:34px}.card:after{line-height:34px}
+.progress{border-bottom:1px solid rgba(139,98,47,.4);padding-bottom:18px}
+.bar{height:10px;border:1px solid #a27b43;background:#e0c996}
+.fill{background:linear-gradient(90deg,#722d29,#a75932,#c49a51)}
+.scene{
+ text-align:center;
+ padding:17px 18px;
+ color:#3d2c1e;
+ font-family:"Noto Serif KR","Batang","Malgun Gothic",serif;
+}
+.scene:before,.scene:after{content:"— ❦ —";display:block;color:#9b713c;font-size:.8rem;letter-spacing:.25em;margin:4px 0 12px}
+.scene:after{margin:12px 0 4px}
+.prompt{
+ border:1px solid #b48b52;border-left:5px solid #792f2b;
+ background:linear-gradient(90deg,rgba(187,143,72,.15),rgba(255,250,235,.5));
+ box-shadow:inset 0 0 18px rgba(132,91,39,.06);
+}
+.choice{
+ position:relative;border:1px solid #a87d43;border-radius:3px;
+ background:linear-gradient(#fffaf0,#f3e4bf);
+ box-shadow:inset 0 0 0 2px rgba(255,255,255,.55),0 3px 7px rgba(70,45,18,.08);
+ padding:17px 20px 17px 23px;
+}
+.choice:before{content:"◆";color:#9a7138;font-size:.65rem;margin-right:12px}
+.choice:hover{
+ background:linear-gradient(#fffdf4,#ead2a0);
+ border-color:#76342c;box-shadow:0 5px 13px rgba(72,44,17,.14);
+}
+.result{
+ position:relative;
+ border:1px solid rgba(159,113,54,.45);
+ padding:34px 30px;
+ background:rgba(255,250,237,.35);
+}
+.result:before{content:"❧  ✦  ❧";display:block;color:#9b713a;font-size:1.4rem;letter-spacing:.35em;margin-bottom:16px}
+.result h2{font-family:"Noto Serif KR","Batang",serif;text-shadow:0 1px white}
+.btn,.home-btn{
+ border:1px solid #c29b5c!important;
+ background:linear-gradient(#493727,#2c2118)!important;
+ box-shadow:inset 0 0 0 2px rgba(229,199,139,.16),0 4px 9px rgba(42,28,14,.18)!important;
+ border-radius:3px!important;
+}
+.btn:hover,.home-btn:hover{background:linear-gradient(#6a4930,#38271c)!important}
+.stats{
+ padding:12px;border:1px solid #a37b43;background:rgba(214,187,129,.16);
+ box-shadow:inset 0 0 14px rgba(95,61,24,.08);
+}
+.stat{
+ border:1px solid #a98550;border-radius:3px;
+ background:linear-gradient(#3b3022,#282117);
+ box-shadow:inset 0 0 0 2px rgba(204,169,101,.12);
+}
+.stat.up{background:linear-gradient(#3c734a,#244d31)!important}
+.stat.down{background:linear-gradient(#88413a,#5e2825)!important}
+.notice{border-top:1px solid #c5a16a;padding-top:14px}
+@media(max-width:680px){
+ .header{padding-left:18px;padding-right:18px}
+ .header:before,.header:after{display:none}
+ .card{padding:28px 20px}
+}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+
+<button id="homeBtn" class="home-btn" type="button">처음으로 돌아가기</button>
+
+  <div class="header">
+    <div class="eyebrow" id="eyebrow">HISTORY · RELIGIOUS REFORMATION</div>
+    <h1 id="gameTitle">1517년, 유럽이 흔들리다</h1>
+    <div class="big" id="bigLabel">1517</div>
+    <div class="subtitle" id="subtitle">선택에 따라 역사가 달라집니다.</div>
+  </div>
+
+  <section class="card">
+    <div id="stats" class="stats hidden">
+      <div class="stat" data-key="gold">💰<div class="lab">금</div><div id="gold" class="val">100</div></div>
+      <div class="stat" data-key="pop">👥<div class="lab">인구</div><div id="pop" class="val">100</div></div>
+      <div class="stat" data-key="army">⚔️<div class="lab">상비군</div><div id="army" class="val">30</div></div>
+      <div class="stat" data-key="crown">👑<div class="lab">왕권</div><div id="crown" class="val">50</div></div>
+    </div>
+    <div class="progress"><span id="step">1 / 2</span><div class="bar"><div id="fill" class="fill"></div></div></div>
+    <div id="content"></div>
+  </section>
+</div>
+
+<script>
+const $=id=>document.getElementById(id);
+const content=$('content');
+let stats={gold:100,pop:100,army:30,crown:50};
+
+function setHeader(eyebrow,title,big,subtitle){
+  $('eyebrow').textContent=eyebrow;
+  $('gameTitle').textContent=title;
+  $('bigLabel').textContent=big;
+  $('subtitle').textContent=subtitle;
+}
+function setProgress(n,total){
+  $('step').textContent=`${n} / ${total}`;
+  $('fill').style.width=`${n/total*100}%`;
+}
+function setStatsVisible(v){$('stats').classList.toggle('hidden',!v)}
+function renderStats(){
+  for(const k of ['gold','pop','army','crown']) $(k).textContent=stats[k];
+}
+function changeStats(delta){
+  Object.entries(delta).forEach(([k,v])=>{
+    stats[k]+=v;
+    const box=document.querySelector(`[data-key="${k}"]`);
+    box.classList.remove('up','down');
+    void box.offsetWidth;
+    box.classList.add(v>0?'up':'down');
+    clearTimeout(box._timer);
+    box._timer=setTimeout(()=>box.classList.remove('up','down'),900);
+  });
+  renderStats();
+}
+function choices(items){
+  return `<div class="choices">${items.map(x=>
+    `<button class="choice" data-act="${x.act}"><b>${x.label}</b>${x.text}</button>`
+  ).join('')}</div>`;
+}
+function bind(actions){
+  document.querySelectorAll('[data-act]').forEach(b=>{
+    b.onclick=()=>actions[b.dataset.act]();
+  });
+}
+function result(title,text,buttons){
+  content.innerHTML=`<div class="result"><h2>${title}</h2><p>${text}</p>
+    <div>${buttons.map((b,i)=>`<button class="btn ${i?'secondary':''}" data-act="${b.act}">${b.text}</button>`).join('')}</div></div>`;
+  const acts={}; buttons.forEach(b=>acts[b.act]=b.fn); bind(acts);
+}
+
+/* ===== 1. 종교개혁 ===== */
+function startReformation(){
+  setStatsVisible(false);
+  setHeader('HISTORY · RELIGIOUS REFORMATION','1517년, 유럽이 흔들리다','1517','선택에 따라 역사가 달라집니다.');
+  reformationLuther();
+}
+function reformationLuther(){
+  setProgress(1,2);
+  content.innerHTML=`<div class="scene">교황청은 성 베드로 대성당 건축 재원을 마련하는 과정에서 면벌부 판매를 적극적으로 추진하고 있습니다!</div>
+  <div class="prompt">“당신은 독일 비텐베르크 대학의 신학 교수 마르틴 루터입니다. 어떤 행동을 하시겠습니까?”</div>
+  ${choices([
+    {label:'①',text:'교황을 지지하여 힘을 보탠다.',act:'a'},
+    {label:'②',text:'반박문을 작성하여 성경과 신앙을 중심으로 교회를 개혁하도록 요구한다.',act:'b'},
+    {label:'③',text:'왕에게 교황을 체포하라고 요구서를 보낸다.',act:'c'},
+    {label:'④',text:'모든 종교를 금지시키도록 한다.',act:'d'}])}`;
+  bind({
+    a:()=>result('민중의 분노를 사다','당신은 성난 민중들이 휘두른 몽둥이에 숨졌습니다. 모두 당신의 경멸스러운 이름을 기억할 것입니다.',[{text:'다시 선택하기',act:'r',fn:reformationLuther}]),
+    b:()=>result('종교개혁의 불씨가 번지다!','독일 지역의 많은 성직자들과 교인들이 당신의 반박문에 화답했습니다! 결국 1555년 아우크스부르크 화의가 체결되어 루터파가 공식적으로 인정받았습니다.',[{text:'스위스로 이동하기 →',act:'n',fn:reformationCalvin}]),
+    c:()=>result('반역죄로 처형되다','왕이 당신의 요구서를 보고 반역죄로 체포하였습니다. 당신은 화형으로 생을 마감했습니다.',[{text:'다시 선택하기',act:'r',fn:reformationLuther}]),
+    d:()=>result('대학에서 쫓겨나다','모든 민중이 당신의 주장을 미친 소리 취급했고, 당신은 대학 교수 자리에서 물러나야 했습니다.',[{text:'다시 선택하기',act:'r',fn:reformationLuther}])
+  });
+}
+function reformationCalvin(){
+  setProgress(2,2);
+  setHeader('HISTORY · RELIGIOUS REFORMATION','1517년, 유럽이 흔들리다','1530s','종교개혁의 물결이 스위스로 이어집니다.');
+  content.innerHTML=`<div class="scene">스위스에서도 종교 개혁의 물결이 계속됩니다.</div>
+  <div class="prompt">“당신은 스위스에서 활동하는 종교개혁자 장 칼뱅입니다. 어떤 주장을 펼치시겠습니까?”</div>
+  ${choices([
+    {label:'①',text:'인간의 구원이 신에 의해 미리 정해져 있다는 예정설을 주장한다.',act:'a'},
+    {label:'②',text:'무조건 교황의 면벌부 판매 조치에 따라야 한다고 주장한다.',act:'b'},
+    {label:'③',text:'그리스 정교로 개종하여 새로운 크리스트교를 열어야 한다고 주장한다.',act:'c'}])}`;
+  bind({
+    a:()=>result('종교개혁의 완성 · 신교의 확산','당신의 주장이 힘을 얻고 프랑스·영국·네덜란드 등으로 퍼졌습니다. 유럽 곳곳에 신교가 확산되었습니다!<br><br>신교의 확산과 종교 갈등 속에서 30년 전쟁 등이 발생했고, 결국 베스트팔렌 조약으로 제후가 가톨릭·루터파·칼뱅파 중 하나를 선택하는 것이 허용되었습니다. 스위스와 네덜란드의 독립도 승인되었습니다.',[
+      {text:'다음 챕터 · 재정 군사 국가 →',act:'next',fn:startFiscal}]),
+    b:()=>result('스위스에서 추방되다','성난 민심이 당신을 위협합니다. 당신은 스위스에서 쫓겨나게 되었습니다.',[{text:'다시 선택하기',act:'r',fn:reformationCalvin}]),
+    c:()=>result('이단으로 지목되다','당신은 교황청에서 이단으로 지목되어 화형되었습니다.',[{text:'다시 선택하기',act:'r',fn:reformationCalvin}])
+  });
+}
+
+/* ===== 2. 재정 군사 국가 ===== */
+function fiscalHeader(){
+  setHeader('HISTORY · FISCAL-MILITARY STATE','재정 군사 국가 체험하기','17세기','국가의 재정과 군사력을 직접 운영해 보세요.');
+  setStatsVisible(true);
+}
+function startFiscal(){
+  stats={gold:100,pop:100,army:30,crown:50}; renderStats(); fiscalHeader(); fiscal1();
+}
+function fiscal1(){
+  setProgress(1,4);
+  content.innerHTML=`<div class="scene">주변 국가가 상비군을 확대하여 전쟁을 준비하고 있습니다!</div>
+  <div class="prompt">어떤 선택을 하시겠습니까?</div>
+  ${choices([{label:'A.',text:'상비군 확대',act:'a'},{label:'B.',text:'상비군 유지',act:'b'}])}`;
+  bind({
+    a:()=>{changeStats({gold:-30,army:+30});setTimeout(fiscal2,950)},
+    b:()=>{changeStats({crown:-20,pop:-20});setTimeout(()=>result('국가 멸망','전쟁에서 패배했습니다. 왕권과 인구가 크게 감소했고 국가는 결국 멸망했습니다.',[{text:'재정 군사 국가 다시 도전',act:'r',fn:startFiscal}]),950)}
+  });
+}
+function fiscal2(){
+  setProgress(2,4);
+  content.innerHTML=`<div class="scene">전쟁이 시작되었습니다. 당신의 상비군은 적의 공격을 막아냈습니다!<br><br>그러나 대규모 상비군을 유지하려면 지속적인 세금이 필요합니다!</div>
+  <div class="prompt">어떻게 재정을 마련하시겠습니까?</div>
+  ${choices([{label:'A.',text:'의회와 협력하여 세금 확보',act:'a'},{label:'B.',text:'왕이 직접 세금 징수',act:'b'},{label:'C.',text:'군대 축소',act:'c'}])}`;
+  bind({
+    a:fiscal3,
+    b:()=>{changeStats({crown:+20});setTimeout(fiscal3,950)},
+    c:()=>{changeStats({army:-30,crown:-50,pop:-50});setTimeout(()=>result('전쟁 패배 · 국가 멸망','군대를 축소한 틈을 타 적군이 다시 공격했습니다. 국가는 전쟁에서 패배하고 멸망했습니다.',[{text:'재정 군사 국가 다시 도전',act:'r',fn:startFiscal}]),950)}
+  });
+}
+function fiscal3(){
+  setProgress(3,4);
+  content.innerHTML=`<div class="scene">국고에 세금이 없어 징수가 불가능합니다.</div>
+  <div class="prompt">새로운 재정 기반을 마련하기 위해 어떤 경제 정책을 선택하시겠습니까?</div>
+  ${choices([{label:'①',text:'중상주의 정책 채택',act:'a'},{label:'②',text:'중상주의 정책 채택하지 않음',act:'b'}])}`;
+  bind({
+    a:fiscal4,
+    b:()=>{changeStats({gold:-50,army:-30});setTimeout(()=>result('국가 멸망','충분한 재정을 확보하지 못해 상비군을 유지할 수 없게 되었습니다. 국가는 전쟁에서 패배하고 멸망했습니다.',[{text:'재정 군사 국가 다시 도전',act:'r',fn:startFiscal}]),950)}
+  });
+}
+function fiscal4(){
+  setProgress(4,4);
+  content.innerHTML=`<div class="scene">중상주의 정책을 채택하기로 했습니다.</div>
+  <div class="prompt">국부를 늘리고 상비군을 유지하기 위해 어떤 정책을 시행하시겠습니까?</div>
+  ${choices([
+    {label:'⑴',text:'원료 수출 금지, 완성품 수입 금지 조치 내리기',act:'a'},
+    {label:'⑵',text:'식민지보다는 국내에서 머무르기',act:'b'},
+    {label:'⑶',text:'국내 공업 제품의 출국세 높이기',act:'c'},
+    {label:'⑷',text:'동인도 회사 폐쇄하기',act:'d'},
+    {label:'⑸',text:'공장보다는 농업 진흥하기',act:'e'}])}`;
+  const fiscalPolicyDefeat=()=>{
+    changeStats({gold:-50,army:-30});
+    setTimeout(()=>result(
+      '전쟁 패배 · 국가 멸망',
+      '전쟁에서 패배했습니다. 당신의 국가는 재정난을 극복하지 못하고 결국 멸망했습니다.',
+      [{text:'재정 군사 국가 다시 도전',act:'r',fn:startFiscal}]
+    ),950);
+  };
+  bind({
+    a:()=>{changeStats({gold:+50,army:+30});setTimeout(()=>result('전쟁 승리!','전쟁에서 승리했습니다. 당신의 국가는 태평성대를 누리며 최고의 국가로 성장해나갔습니다!<div class="notice">최종 수치 · 금 '+stats.gold+' / 인구 '+stats.pop+' / 상비군 '+stats.army+' / 왕권 '+stats.crown+'</div>',[{text:'다음 이야기: 영국 혁명 →',act:'next',fn:startEnglishRevolution}]),950)},
+    b:fiscalPolicyDefeat,
+    c:fiscalPolicyDefeat,
+    d:fiscalPolicyDefeat,
+    e:fiscalPolicyDefeat
+  });
+}
+
+/* ===== 3. 영국 혁명 ===== */
+function englishHeader(big='1628',sub='왕권과 의회의 충돌이 격화됩니다.'){
+  setStatsVisible(false);
+  setHeader('HISTORY · ENGLISH REVOLUTION','영국 혁명',big,sub);
+}
+function startEnglishRevolution(){ englishHeader(); english1(); }
+function english1(){
+  setProgress(1,6);
+  content.innerHTML=`<div class="scene">찰스 1세가 절대주의를 추구하며 의회의 동의 없이 세금을 걷습니다.</div>
+  <div class="prompt">왕에 대적하는 당신은 어떻게 대처하겠습니까?</div>
+  ${choices([{label:'A.',text:'찰스 1세의 명령에 굴복한다.',act:'a'},{label:'B.',text:'찰스 1세에게 대항하기 위해 권리 청원을 제출한다.',act:'b'}])}`;
+  bind({
+    a:()=>result('의회에서 버림받다','의회 의원들에게 집단 폭행을 당하며 생을 마감했습니다.',[{text:'영국 혁명 다시 시작',act:'r',fn:startEnglishRevolution}]),
+    b:english2
+  });
+}
+function english2(){
+  setProgress(2,6);
+  content.innerHTML=`<div class="scene">권리 청원의 내용을 어떻게 작성하시겠습니까?</div>
+  ${choices([{label:'A.',text:'의회의 동의 없이 세금을 걷을 수 없습니다.',act:'a'},{label:'B.',text:'프랑스의 화폐를 우리나라의 화폐로 하시지요.',act:'b'},{label:'C.',text:'이만 왕위에서 물러나주시지요.',act:'c'}])}`;
+  bind({
+    a:english3,
+    b:()=>result('친프랑스 분자로 몰리다','친프랑스 분자로 몰려 의원직이 박탈되었습니다.',[{text:'다시 도전',act:'r',fn:english2}]),
+    c:()=>result('반역자로 몰리다','반역자로 몰려 의원직이 박탈되었습니다.',[{text:'다시 도전',act:'r',fn:english2}])
+  });
+}
+function english3(){
+  setProgress(3,6);
+  content.innerHTML=`<div class="scene">찰스 1세가 의회를 해산하였습니다!</div>
+  <div class="prompt">의회파와 왕당파, 둘 중 어느 편에 서겠습니까?</div>
+  ${choices([{label:'A.',text:'나는 꿋꿋이 의회 편에서 의회의 권리를 되찾기 위해 힘쓰겠소.',act:'a'},{label:'B.',text:'아무래도 이제 국왕 폐하의 권력이 강해지는 것 같소. 나는 폐하 편에 서겠소.',act:'b'}])}`;
+  bind({
+    a:english4,
+    b:()=>result('왕당파의 몰락','이후 벌어진 내전에서 왕당파가 패배했고, 당신은 사형을 당했습니다.',[{text:'다시 도전',act:'r',fn:english3}])
+  });
+}
+function english4(){
+  setProgress(4,6);
+  englishHeader('1660s','공화정과 왕정 복고를 거쳐 다시 갈림길에 섭니다.');
+  content.innerHTML=`<div class="scene">의회파가 승리하여 공화정을 수립했습니다!<br><br>크롬웰의 독재 정치로 인해 왕정이 부활했습니다.<br><br>제임스 2세가 전제 정치를 펼치며 의회를 더욱 강력하게 탄압합니다.</div>
+  <div class="prompt">제임스 2세의 전제 정치에 어떻게 대항하시겠습니까?</div>
+  ${choices([
+    {label:'A.',text:'제임스 2세는 전보다 훨씬 강력한 왕이시니, 이번엔 정말 국왕 폐하 편에 서야겠어.',act:'a'},
+    {label:'B.',text:'왕을 폐위시키고, 다른 왕을 단독으로 올리자. 의회의 말을 잘 듣는.',act:'b'},
+    {label:'C.',text:'안되겠다. 물갈이를 해야겠어. 네덜란드에서 윌리엄을 데려오고, 국왕 폐하의 딸인 메리와 공동 왕을 세우자.',act:'c'},
+    {label:'D.',text:'이제 우리 영국은 희망이 없어. 나는 영국을 떠날래.',act:'d'}])}`;
+  bind({
+    a:()=>result('의회에서 쫓겨나다','국왕을 미워하는 다른 의원들에 의해 의회에서 쫓겨나게 되었습니다.',[{text:'다시 도전',act:'r',fn:english4}]),
+    b:()=>result('정계 은퇴','현실감각이 없다는 꾸중을 듣고, 결국 정계에서 은퇴했습니다.',[{text:'다시 도전',act:'r',fn:english4}]),
+    c:english5,
+    d:americaPreview
+  });
+}
+function english5(){
+  setProgress(5,6);
+  englishHeader('1689','명예혁명 이후 의회의 권리를 문서로 보장할 때입니다.');
+  content.innerHTML=`<div class="scene">아무래도 확실하게 의회의 권리를 보장해야 할 것 같습니다.</div>
+  <div class="prompt">권리 장전 초안의 내용에서 어떤 내용을 빼겠습니까?</div>
+  ${choices([
+    {label:'A.',text:'의회의 동의 없이 법을 정지할 수 없다.',act:'a'},
+    {label:'B.',text:'의회의 승인 없이 세금을 거두는 것은 불법이다.',act:'b'},
+    {label:'C.',text:'전쟁 시에는 의회의 동의 없이 국왕이 직접 세금을 거둬들일 수 있다.',act:'c'},
+    {label:'D.',text:'평상시에 의회의 동의 없이 상비군을 양성하거나 유지하는 것은 불법이다.',act:'d'}])}`;
+  const bad=()=>result('전제 정치의 부활','국왕의 권력이 매우 강해져 다시 절대주의적인 전제 정치가 시작되었습니다. 당신은 왕의 앞잡이로 지목되어 결국 암살되었습니다.',[{text:'다시 도전',act:'r',fn:english5}]);
+  bind({a:bad,b:bad,c:()=>result('명예 혁명 성공! · 의회의 승리','권리 장전을 통해 의회의 권리가 보장되고 입헌 군주정의 기틀이 마련되었습니다.',[{text:'다음 이야기로 →',act:'n',fn:americaPreview}]),d:bad});
+}
+/* ===== 4. 아메리카 식민지에서 미국으로 ===== */
+function americanHeader(big='1760s',sub='영국령 북아메리카 식민지에 저항의 움직임이 커집니다.'){
+  setStatsVisible(false);
+  setHeader('HISTORY · AMERICAN REVOLUTION','아메리카 식민지에서 미국으로',big,sub);
+}
+function americaPreview(){ startAmericanRevolution(); }
+function startAmericanRevolution(){
+  americanHeader();
+  america1();
+}
+function america1(){
+  setProgress(1,8);
+  content.innerHTML=`<div class="scene">7년 전쟁 이후, 영국 정부가 여러 종류의 세금을 매깁니다.</div>
+  <div class="prompt">당신은 어떻게 대응하시겠습니까?</div>
+  ${choices([
+    {label:'A.',text:'영국 정부의 세금 정책에 순응한다.',act:'a'},
+    {label:'B.',text:'저항한다! “대표 없는 곳에 과세할 수 없다!”',act:'b'}])}`;
+  bind({
+    a:()=>result(
+      '식민지 주민들의 표적이 되다',
+      '당신은 영국 정부의 앞잡이로 지목되었고, 식민지 주민들에 의해 암살되었습니다.',
+      [{text:'다시 선택하기',act:'r',fn:america1}]
+    ),
+    b:america2
+  });
+}
+function america2(){
+  setProgress(2,8);
+  americanHeader('1773','과세에 대한 저항이 점점 거세집니다.');
+  content.innerHTML=`<div class="scene">식민지의 권리를 지키기 위해 행동할 때입니다.</div>
+  <div class="prompt">어떤 방식으로 영국 정부에 맞서겠습니까?</div>
+  ${choices([
+    {label:'A.',text:'무기고로 들어가 바로 전쟁을 준비하자!',act:'a'},
+    {label:'B.',text:'평화적으로 대응하자. 평화 행진을 통해 우리의 억울함을 호소하자.',act:'b'},
+    {label:'C.',text:'보스턴에 정박된 동인도 회사의 배를 습격하자!',act:'c'}])}`;
+  bind({
+    a:()=>result(
+      '너무 이른 무장 봉기',
+      '매우 급진적인 선택으로 인해 영국 정부에게 진압되어, 결국 식민지는 영원히 자유를 얻지 못하게 되었습니다.',
+      [{text:'다시 선택하기',act:'r',fn:america2}]
+    ),
+    b:()=>result(
+      '고립된 평화주의자',
+      '너무나도 순진한 대응으로 인해 다른 주민들의 지지를 얻지 못했고, 당신은 죽을 때까지 방에서 소설만 쓰게 되었습니다.',
+      [{text:'다시 선택하기',act:'r',fn:america2}]
+    ),
+    c:americaBostonTea
+  });
+}
+function americaBostonTea(){
+  setProgress(3,8);
+  americanHeader('1773','식민지 저항이 폭발합니다.');
+  result(
+    '보스턴 차 사건!',
+    '식민지 주민들이 보스턴 항에 정박한 동인도 회사의 배를 습격하여 차 상자를 바다에 던졌습니다.',
+    [{text:'확인',act:'n',fn:americaCoerciveActs}]
+  );
+}
+function americaCoerciveActs(){
+  setProgress(4,8);
+  americanHeader('1774–1775','영국과 식민지의 갈등이 전쟁으로 번집니다.');
+  result(
+    '보스턴 항 봉쇄와 대륙 회의',
+    '영국이 보스턴 항을 봉쇄하며 강압적으로 나섰습니다. 식민지 대표들은 대륙 회의를 열었고, 갈등은 결국 전쟁으로 발전했습니다.',
+    [{text:'확인',act:'n',fn:americaDeclaration}]
+  );
+}
+function americaDeclaration(){
+  setProgress(5,8);
+  americanHeader('1776','독립의 뜻을 세계에 선언할 때입니다.');
+  content.innerHTML=`<div class="scene">독립 선언문 작성</div>
+  <div class="prompt">당신들은 독립 선언문을 작성하여 식민지 주민들의 뜻을 만천하에 알리고자 합니다. 초안의 내용 중, 어떤 내용을 제거해야 할까요?</div>
+  ${choices([
+    {label:'A.',text:'모든 사람은 평등하게 태어났다.',act:'a'},
+    {label:'B.',text:'정부의 정당한 권력은 사람들의 동의로부터 나온다.',act:'b'},
+    {label:'C.',text:'창조주로부터 다른 사람에게 넘길 수 없는 권리를 부여받았다.',act:'c'},
+    {label:'D.',text:'어떠한 형태의 정부든 이러한 권리를 침해한다면 사람들은 언제든지 정부를 바꾸거나 무너뜨릴 권리가 있다.',act:'d'},
+    {label:'E.',text:'우리는 영국 폐하의 충실한 신하로서, 위기가 닥쳐온다면 언제든 영국 폐하에게 다시 충성한다.',act:'e'}])}`;
+  const declarationFailure=()=>result(
+    '역모로 몰리다',
+    '독립 선언문의 핵심 원칙을 삭제하려 한 당신은 역모로 몰려 살해되었습니다.',
+    [{text:'독립 선언문 다시 작성',act:'r',fn:americaDeclaration}]
+  );
+  bind({
+    a:declarationFailure,
+    b:declarationFailure,
+    c:declarationFailure,
+    d:declarationFailure,
+    e:americaWarExpands
+  });
+}
+function americaWarExpands(){
+  setProgress(6,8);
+  americanHeader('1777–1781','독립 전쟁이 국제전으로 확대됩니다.');
+  result(
+    '독립 전쟁의 확대',
+    '독립 전쟁은 장기화되고 전선은 더욱 넓어졌습니다. 영국의 강력한 군대에 맞서 식민지군은 힘겨운 전투를 이어가고 있습니다.',
+    [{text:'확인',act:'n',fn:americaForeignAid}]
+  );
+}
+function americaForeignAid(){
+  setProgress(6,8);
+  content.innerHTML=`<div class="scene">전쟁이 매우 불리하게 돌아갑니다.</div>
+  <div class="prompt">유럽의 프랑스와 에스파냐가 지원을 제의해왔습니다. 이에 응할까요?</div>
+  ${choices([
+    {label:'A.',text:'지원을 받는다.',act:'a'},
+    {label:'B.',text:'지원을 받지 않는다. 우리 나라의 운명은 우리가 개척한다.',act:'b'}])}`;
+  bind({
+    a:americaYorktown,
+    b:()=>result(
+      '독립 전쟁 패배',
+      '병력과 기술의 열세를 극복하지 못하고 전쟁에서 패배했습니다. 식민지의 독립은 좌절되었습니다.',
+      [{text:'다시 선택하기',act:'r',fn:americaForeignAid}]
+    )
+  });
+}
+function americaYorktown(){
+  setProgress(7,8);
+  americanHeader('1781','독립 전쟁의 승부가 결정됩니다.');
+  result(
+    '요크타운 전투 승리!',
+    '프랑스의 지원을 받은 대륙군이 요크타운에서 영국군을 포위하여 결정적인 승리를 거두었습니다.',
+    [{text:'확인',act:'n',fn:americaParis}]
+  );
+}
+function americaParis(){
+  setProgress(7,8);
+  americanHeader('1783','식민지가 국제적으로 독립을 인정받습니다.');
+  result(
+    '파리 조약 · 독립 승인',
+    '영국과의 파리 조약을 통해 식민지의 독립을 승인받았습니다. 이제 식민지는 완전하게 독립했습니다!',
+    [{text:'확인',act:'n',fn:americaConstitution}]
+  );
+}
+function americaConstitution(){
+  setProgress(8,8);
+  americanHeader('1787','새로운 국가의 정치 질서를 설계할 때입니다.');
+  content.innerHTML=`<div class="scene">미국 헌법 제정하기!</div>
+  <div class="prompt">미국 헌법 초안을 작성하고자 합니다. 어떤 내용을 제거해야 할까요?</div>
+  ${choices([
+    {label:'A.',text:'모든 주권은 국민에게 있다.',act:'a'},
+    {label:'B.',text:'국가의 권력은 입법, 행정, 사법 세 가지로 나누어 삼권 분립의 원리로 운영한다.',act:'b'},
+    {label:'C.',text:'황제가 미국을 통치하며 국민은 이에 어김없이 따른다.',act:'c'}])}`;
+  const constitutionFailure=()=>result(
+    '신대륙에서의 전제 정치',
+    '전제 정치가 대서양을 건너 신대륙에까지 당도했습니다. 절대주의는 걷잡을 수 없이 커져나갑니다.',
+    [{text:'헌법 다시 작성하기',act:'r',fn:americaConstitution}]
+  );
+  bind({
+    a:constitutionFailure,
+    b:constitutionFailure,
+    c:americaFinal
+  });
+}
+function americaFinal(){
+  setProgress(8,8);
+  americanHeader('1787','새로운 공화국이 탄생합니다.');
+  result(
+    '세계 최초의 민주 공화국, 미국이 탄생하다.',
+    '미국 혁명은 이후 프랑스 혁명과 라틴 아메리카의 독립 운동에 크게 영향을 미칩니다.',
+    [
+      {text:'전체 게임 처음부터',act:'home',fn:startReformation},
+      {text:'미국 혁명 다시 하기',act:'again',fn:startAmericanRevolution}
+    ]
+  );
+}
+
+
+$('homeBtn').onclick=()=>{
+  if(confirm('처음 화면으로 돌아가시겠습니까? 현재 진행 상황은 초기화됩니다.')){
+    startReformation();
+    window.scrollTo(0,0);
+  }
+};
+
+startReformation();
+</script>
+</body>
+</html>
